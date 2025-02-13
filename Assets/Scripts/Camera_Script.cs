@@ -13,6 +13,6 @@ public class Camera_Script : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        transform.position = new Vector3(transform.position.x, transform.position.y, player.position.z - 11.19f);
+        transform.position = new Vector3(transform.position.x, transform.position.y, player.position.z - 5f);
     }
 }
