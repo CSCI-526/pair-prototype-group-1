@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+
+
 public class player_Controller : MonoBehaviour
 {
 
@@ -19,13 +21,14 @@ public class player_Controller : MonoBehaviour
 
 
 
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         isPlay = false;
         // currentPosition=0(center), =1(left), =2(right)
         currentPosition = 0;
-
     }
 
     // Update is called once per frame
@@ -79,6 +82,9 @@ public class player_Controller : MonoBehaviour
                 isGrounded = false; // Mark as not grounded
             }
 
+            // if(Input.GetKeyDown(KeyCode.R)){
+            //     RestartGame();
+            // }
 
             // if(Input.GetKeyDown(KeyCode.Space)){
             //     rb.AddForce(Vector3.up * JumpForce , ForceMode.Impulse);
@@ -91,7 +97,7 @@ public class player_Controller : MonoBehaviour
 
     }
 
-    // Detect collision with ground
+    // Detecting the collision with ground to control jumping limitation
     void OnCollisionEnter(Collision collision)
     {
         // Check if the player is touching the ground
@@ -99,7 +105,36 @@ public class player_Controller : MonoBehaviour
         {
             isGrounded = true; // Reset isGrounded when touching the ground
         }
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            float playerBottom = transform.position.y - (transform.localScale.y / 2);
+            float obstacleTop = collision.transform.position.y + (collision.transform.localScale.y / 2);
+
+            // If the player's bottom is above the obstacle's top, allow them to land on it
+            if (playerBottom >= obstacleTop - 0.1f)
+            {
+                Debug.Log("Landed on the obstacle, continue running!");
+                isGrounded = true; // Treat obstacle as ground
+            }
+            else
+            {
+                Debug.Log("Collision from front! Game Over.");
+                Time.timeScale = 0; // Stop the game
+            }
+        }
+
     }
+    // Detecting the collisionn with obstacle and stopping the game
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Obstacle"))
+        {
+            isGrounded = false;
+        }
+    }
+
+
+
 
     // IEnumerator Forward_Flip_jump()
     // {
