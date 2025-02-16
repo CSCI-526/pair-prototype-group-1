@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 
 public class player_Controller : MonoBehaviour
@@ -19,7 +20,10 @@ public class player_Controller : MonoBehaviour
     public float gravity = -9.8f;
     private bool isGrounded = true; // Flag to track if player is on the ground
 
-
+    // Game Over variables
+    private Vector3 startPosition; 
+    public GameObject gameOverUI;
+     public TMP_Text gameOverText; // Reference to Game Over message text
 
 
 
@@ -27,8 +31,7 @@ public class player_Controller : MonoBehaviour
     void Start()
     {
         isPlay = false;
-        // currentPosition=0(center), =1(left), =2(right)
-        currentPosition = 0;
+        currentPosition = 0; // currentPosition=0(center), =1(left), =2(right)
     }
 
     // Update is called once per frame
@@ -39,6 +42,11 @@ public class player_Controller : MonoBehaviour
         if(Input.GetMouseButtonDown(0)){
             isPlay = true;
         }
+
+        if(Input.GetKeyDown(KeyCode.R) && Time.timeScale == 0 && isPlay==false){
+            RestartGame();
+        }
+
         if(isPlay){
             //transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + forward_speed * Time.deltaTime);   
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, forward_speed);
@@ -82,7 +90,7 @@ public class player_Controller : MonoBehaviour
                 isGrounded = false; // Mark as not grounded
             }
 
-            // if(Input.GetKeyDown(KeyCode.R)){
+            // if(Input.GetKeyDown(KeyCode.R) && Time.timeScale == 0){
             //     RestartGame();
             // }
 
@@ -118,8 +126,9 @@ public class player_Controller : MonoBehaviour
             }
             else
             {
-                Debug.Log("Collision from front! Game Over.");
-                Time.timeScale = 0; // Stop the game
+                // Debug.Log("Collision from front! Game Over.");
+                // Time.timeScale = 0; // Stop the game
+                GameOver();
             }
         }
 
@@ -131,6 +140,30 @@ public class player_Controller : MonoBehaviour
         {
             isGrounded = false;
         }
+    }
+
+    // restart the game
+    void RestartGame()
+    {
+        Time.timeScale = 1; // Resume game
+        gameOverUI.SetActive(false); // Hide Game Over UI
+        transform.position = startPosition; // Reset player position
+        rb.linearVelocity = Vector3.zero;
+        isPlay = false; // Set play state to false (waiting for input)
+    }
+
+    // Game Over function
+    void GameOver()
+    {
+        Debug.Log("Collision from front! Game Over.");
+        isPlay = false; // Stop player movement
+        rb.linearVelocity = Vector3.zero; // Reset the value of velocity to starting velocity
+        transform.position = startPosition; // Reset position of the player
+
+        gameOverUI.SetActive(true); // Show the UI that the Game is Over 
+        gameOverText.text = "You crashed! Press 'R' to restart."; // Display the message to guide player to restart
+        Time.timeScale = 0; // Pause the game
+
     }
 
 
