@@ -5,7 +5,6 @@ using TMPro;
 
 public class player_Controller : MonoBehaviour
 {
-
     public float forward_speed;
     public Transform Center_position;
     public Transform Left_position;
@@ -20,12 +19,10 @@ public class player_Controller : MonoBehaviour
     public float gravity = -9.8f;
     private bool isGrounded = true; // Flag to track if player is on the ground
 
-    // Game Over variables
+    // variables for GameOver part
     private Vector3 startPosition; 
     public GameObject gameOverUI;
-     public TMP_Text gameOverText; // Reference to Game Over message text
-
-
+    public TMP_Text gameOverText; // Reference to Game Over message text
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -42,11 +39,9 @@ public class player_Controller : MonoBehaviour
         if(Input.GetMouseButtonDown(0)){
             isPlay = true;
         }
-
         if(Input.GetKeyDown(KeyCode.R) && Time.timeScale == 0 && isPlay==false){
             RestartGame();
         }
-
         if(isPlay){
             //transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + forward_speed * Time.deltaTime);   
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, forward_speed);
@@ -59,10 +54,6 @@ public class player_Controller : MonoBehaviour
             else if(currentPosition == 2){
                 transform.position = Vector3.Lerp(transform.position, new Vector3(Right_position.position.x, transform.position.y, transform.position.z), side_Speed * Time.deltaTime);
             }
-
-
-
-
             // leftArrow Press
             if(Input.GetKeyDown(KeyCode.LeftArrow)){
                 if(currentPosition == 0){
@@ -72,7 +63,6 @@ public class player_Controller : MonoBehaviour
                     currentPosition = 0;
                 }
             }
-
             // rightArrow Press
             if(Input.GetKeyDown(KeyCode.RightArrow)){
                 if(currentPosition == 0){
@@ -82,27 +72,13 @@ public class player_Controller : MonoBehaviour
                     currentPosition =0;
                 }
             }
-
-            // Jumping logic    02
+            // Jump logic
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
             {
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, JumpForce, rb.linearVelocity.z); // Apply jump force
                 isGrounded = false; // Mark as not grounded
             }
-
-            // if(Input.GetKeyDown(KeyCode.R) && Time.timeScale == 0){
-            //     RestartGame();
-            // }
-
-            // if(Input.GetKeyDown(KeyCode.Space)){
-            //     rb.AddForce(Vector3.up * JumpForce , ForceMode.Impulse);
-            //     // StartCoroutine(Forward_Flip_jump());
-            // } 
-            //01 this works: 
-
         }
-
-
     }
 
     // Detecting the collision with ground to control jumping limitation
@@ -111,9 +87,9 @@ public class player_Controller : MonoBehaviour
         // Check if the player is touching the ground
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true; // Reset isGrounded when touching the ground
+            isGrounded = true; // Resetting the value of  isGrounded on groundTouch
         }
-        if (collision.gameObject.CompareTag("Obstacle"))
+        if (collision.gameObject.CompareTag("Obstacle") || collision.gameObject.CompareTag("Obstacle_Type2"))
         {
             float playerBottom = transform.position.y - (transform.localScale.y / 2);
             float obstacleTop = collision.transform.position.y + (collision.transform.localScale.y / 2);
@@ -126,8 +102,6 @@ public class player_Controller : MonoBehaviour
             }
             else
             {
-                // Debug.Log("Collision from front! Game Over.");
-                // Time.timeScale = 0; // Stop the game
                 GameOver();
             }
         }
@@ -159,20 +133,11 @@ public class player_Controller : MonoBehaviour
         isPlay = false; // Stop player movement
         rb.linearVelocity = Vector3.zero; // Reset the value of velocity to starting velocity
         transform.position = startPosition; // Reset position of the player
-
         gameOverUI.SetActive(true); // Show the UI that the Game is Over 
         gameOverText.text = "You crashed! Press 'R' to restart."; // Display the message to guide player to restart
         Time.timeScale = 0; // Pause the game
 
     }
-
-
-
-
-    // IEnumerator Forward_Flip_jump()
-    // {
-    //     yield return new WaitForSeconds(0.01f);
-    // }
 
 }
 
