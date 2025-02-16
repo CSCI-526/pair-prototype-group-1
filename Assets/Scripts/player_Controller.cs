@@ -39,7 +39,7 @@ public class player_Controller : MonoBehaviour
         if(Input.GetMouseButtonDown(0)){
             isPlay = true;
         }
-        if(Input.GetKeyDown(KeyCode.R) && Time.timeScale == 0 && isPlay==false){
+        if(Input.GetKeyDown(KeyCode.R) && Time.timeScale == 0 ){
             RestartGame();
         }
         if(isPlay){
