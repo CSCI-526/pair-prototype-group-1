@@ -38,12 +38,12 @@ public class player_Controller : MonoBehaviour
 
          if (controlsUI != null)
         {
-        controlsUI.SetActive(true);
+            controlsUI.SetActive(true);
         }
     }
 
     // Update is called once per frame
-    [System.Obsolete]
+    // [System.Obsolete]
     void Update()
 {
     rb.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
