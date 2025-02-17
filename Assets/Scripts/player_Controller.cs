@@ -97,7 +97,21 @@ public class player_Controller : MonoBehaviour
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, JumpForce, rb.linearVelocity.z);
             isGrounded = false;
         }
-
+        if (finalCollectible != null && finalCollectible.activeSelf)
+        {
+            // Assuming the player's forward direction increases the z value,
+            // and adding a tolerance of 1 unit (adjust if needed)
+            if (transform.position.z > finalCollectible.transform.position.z + 1f)
+            {
+                Debug.Log("Final collectible missed! Restarting game.");
+                isPlay = false;
+                rb.linearVelocity = Vector3.zero;
+                transform.position = startPosition;
+                gameOverUI.SetActive(true);
+                gameOverText.text = "You missed! Press 'R' to restart.";
+                Time.timeScale = 0;
+            }
+        }
         
     }
 }
