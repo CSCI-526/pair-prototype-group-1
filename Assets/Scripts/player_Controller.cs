@@ -22,17 +22,24 @@ public class player_Controller : MonoBehaviour
     private Vector3 startPosition; 
     public GameObject gameOverUI;
     public TMP_Text gameOverText; // Reference to Game Over message text
+    public GameObject finalCollectible; // ✅ Assign this in Unity Inspector
 
     // Reverse mode variables
     private bool isReverseMode = false;
     private float reverseEndZ; // The z-coordinate to stop reverse mode (starting point)
     public Transform startPoint;
     // Start is called before the first frame update
+    public GameObject controlsUI;
     void Start()
     {
         isPlay = false;
         currentPosition = 0; // currentPosition=0(center), =1(left), =2(right)
         startPosition = transform.position; // Store starting position for reverse target.
+
+         if (controlsUI != null)
+        {
+        controlsUI.SetActive(true);
+        }
     }
 
     // Update is called once per frame
@@ -43,6 +50,10 @@ public class player_Controller : MonoBehaviour
 
     if(Input.GetMouseButtonDown(0)){
         isPlay = true;
+         if (controlsUI != null)
+        {
+            controlsUI.SetActive(false);
+        }
     }
     if(Input.GetKeyDown(KeyCode.R) && Time.timeScale == 0 ){
         RestartGame();
@@ -87,33 +98,33 @@ public class player_Controller : MonoBehaviour
             isGrounded = false;
         }
 
-        // ✅ If reverse mode is active, check if the player has reached the starting point.
-        // if(isReverseMode)
-        // {
-            // ✅ Activate the reverse camera when reverse mode starts
-            // Camera_Script cameraScript = FindObjectOfType<Camera_Script>();
-            // if (cameraScript != null)
-            // {
-            //     cameraScript.SetReverseMode(true); // Switch camera for reverse run
-            // }
-
-            // if(transform.position.z <= reverseEndZ)
-            // {
-            //     isReverseMode = false;
-            //     Debug.Log("Reverse mode complete: Player reached the starting point.");
-
-            //     // ✅ Reset Camera to normal position
-            //     if (cameraScript != null)
-            //     {
-            //         cameraScript.SetReverseMode(false); // Reset camera after reverse run
-            //     }
-
-                // (Optional) Stop player movement when reaching the start point
-                // forward_speed = 0;
-            // }
-        // }
+        
     }
 }
+// Winning condition for the game
+void OnTriggerEnter(Collider other)
+{
+    // ✅ Check if the collided object's Transform matches the startPoint Transform
+    if (other.transform == startPoint)
+    {
+        EndGame(); // ✅ Call game over logic when reaching the finish line
+    }
+}
+
+void EndGame()
+{
+    Debug.Log("Game Over: Player reached the finish line!");
+    
+    isPlay = false; // Stop player movement
+    rb.linearVelocity = Vector3.zero; // Stop all movement
+
+    // ✅ Show the Game Over UI
+    gameOverUI.SetActive(true);
+    gameOverText.text = "You Win! Press 'R' to Restart.";
+    
+    Time.timeScale = 0; // Pause the game
+}
+
 
 
     // Collision detection for ground and obstacles.
@@ -157,12 +168,10 @@ public class player_Controller : MonoBehaviour
         isPlay = false;
         forward_speed = Mathf.Abs(forward_speed);
         isReverseMode=false;
-         GameObject finalCollectible = GameObject.FindWithTag("FinalCollectible");
-        if (finalCollectible != null)
-        {
-            finalCollectible.SetActive(true);
-        }
-
+        if (finalCollectible != null && !finalCollectible.activeSelf)
+    {
+        finalCollectible.SetActive(true);
+    }
 
     }
 
@@ -178,9 +187,7 @@ public class player_Controller : MonoBehaviour
         Time.timeScale = 0;
     }
 
-    // Method to activate reverse mode when the big star is collected.
-    // Pass in the starting point's z-coordinate (reverseEndZ).
-    [System.Obsolete]
+   
     public void ActivateReverseMode(float endZ)
 {
     isReverseMode = true;
@@ -188,12 +195,7 @@ public class player_Controller : MonoBehaviour
     forward_speed = -Mathf.Abs(forward_speed);
     Debug.Log("Reverse mode activated. New forward_speed: " + forward_speed);
 
-    // Notify the camera to move to the reverse position
-//     Camera_Script cameraScript = FindObjectOfType<Camera_Script>();
-//     if (cameraScript != null)
-//     {
-//         cameraScript.SetReverseMode(true);
-//     }
+  
 }
 
 }
