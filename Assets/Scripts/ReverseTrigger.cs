@@ -2,23 +2,19 @@ using UnityEngine;
 
 public class ReverseTrigger : MonoBehaviour
 {
-    public Transform finishLine; // sReference to the Finish Line
-
-    // [System.Obsolete]
+    public Transform finishLine; // Reference to the Finish Line
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger entered by: " + other.gameObject.name);
-        
-        player_Controller playerCtrl = other.GetComponentInParent<player_Controller>();
-        if (playerCtrl != null && playerCtrl.gameObject.CompareTag("Player"))
-        {
-            Debug.Log("Player detected in trigger. Activating reverse mode.");
-            
-            // ✅ Activate reverse mode
-            playerCtrl.ActivateReverseMode(finishLine.position.z);
+        PlayerController player = other.GetComponentInParent<PlayerController>();
+        TraceSpawnerManager traceSpawnerManager = GameObject.Find("TraceSpawner").GetComponent<TraceSpawnerManager>().Instance;
 
-            // ✅ Instead of destroying, disable the object
-            gameObject.SetActive(false);
+        if (traceSpawnerManager.EnoughTracesPlaced())
+        {
+            GameManager.EnterTransitionMode();
+        }
+        else
+        {
+            player.GameOver("You haven't placed enough traces! Press 'R' to restart.");
         }
     }
 }
