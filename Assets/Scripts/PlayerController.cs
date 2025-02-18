@@ -159,6 +159,11 @@ public class PlayerController : MonoBehaviour
         gameOverText.color = Color.white;
         controlsUI.SetActive(true);
         ResetPlayerState();
+
+        TraceSpawnerManager traceSpawnerManager = GameObject.Find("TraceSpawner").GetComponent<TraceSpawnerManager>().Instance;
+        traceSpawnerManager.traceCooldownText.text = "";
+        traceSpawnerManager.traceCooldownText.color = Color.yellow;
+        
         GameManager.EnterWaitingMode();
     }
 

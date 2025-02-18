@@ -11,6 +11,7 @@ public class TraceSpawnerManager : MonoBehaviour
     public GameObject traceNodePrefab;
     public TMP_Text tracesPlacedText;
     public TMP_Text tracesCollectedText;
+    public TMP_Text traceCooldownText;
     public List<GameObject> traces;
 
     public static readonly float COOLDOWN = 0.5f;
@@ -31,8 +32,18 @@ public class TraceSpawnerManager : MonoBehaviour
     {
         ProcessInput();
 
-        if (cooldown > 0.0f)
-            cooldown -= Time.deltaTime;
+        if (GameManager.gameState == GameManager.GameState.NormalMode)
+        {
+            if (cooldown > 0.0f)
+            { 
+                cooldown -= Time.deltaTime; 
+            }
+            else
+            {
+                traceCooldownText.text = "PLACE A TRACE";
+                traceCooldownText.color = Color.cyan;
+            }
+        }
     }
 
     public void CollectTrace()
@@ -45,37 +56,45 @@ public class TraceSpawnerManager : MonoBehaviour
     {
         for (int i = 0; i < traces.Count; i++)
         {
-            if (traces[i] != null) {
+            if (traces[i] != null)
+            {
                 Destroy(traces[i]);
             }
         }
         traces.Clear();
         tracesCollected = 0;
+        cooldown = 0.0f;
 
         UpdateTracePlacedText();
         UpdateTraceCollectedText();
     }
 
-    public bool EnoughTracesPlaced() {
+    public bool EnoughTracesPlaced()
+    {
         return traces.Count == Constants.MAX_TRACES;
     }
 
-    public bool EnoughTracesCollected() {
+    public bool EnoughTracesCollected()
+    {
         return tracesCollected >= Constants.MAX_TRACES * 0.7f;
     }
 
-    void UpdateTraceCollectedText() {
+    void UpdateTraceCollectedText()
+    {
         tracesCollectedText.text = string.Format("Traces collected: {0}", tracesCollected);
 
-        if (EnoughTracesCollected()) {
+        if (EnoughTracesCollected())
+        {
             tracesCollectedText.color = Color.green;
         }
-        else {
+        else
+        {
             tracesCollectedText.color = Color.white;
         }
     }
 
-    void UpdateTracePlacedText() {
+    void UpdateTracePlacedText()
+    {
         tracesPlacedText.text = string.Format("Traces placed: {0}/10", traces.Count);
     }
 
@@ -89,6 +108,8 @@ public class TraceSpawnerManager : MonoBehaviour
                 traces.Add(newNode);
                 UpdateTracePlacedText();
                 cooldown = COOLDOWN;
+                traceCooldownText.text = "TRACE ON COOLDOWN";
+                traceCooldownText.color = Color.yellow;
             }
         }
     }

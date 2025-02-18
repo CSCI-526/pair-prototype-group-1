@@ -43,6 +43,8 @@ public static class GameManager
         gameState = GameState.Transitioning;
         cameraOffset = Constants.CAMERA_FOLLOW_OFFSET_REVERSE;
         Time.timeScale = 0;
+        TraceSpawnerManager traceSpawnerManager = GameObject.Find("TraceSpawner").GetComponent<TraceSpawnerManager>();
+        traceSpawnerManager.traceCooldownText.text = "";
     }
 
     public static void EnterReverseMode() {
