@@ -54,10 +54,11 @@ public class PlayerController : MonoBehaviour
             if (traceSpawnerManager.EnoughTracesCollected())
             {
                 GameOver("You Win! Press 'R' to play again.");
+                gameOverText.color = Color.green;
             }
             else
             {
-                GameOver("You have not collected enough traces. Press 'R' to restart.");
+                GameOver("You have not collected enough traces :( Press 'R' to restart.");
             }
         }
 
@@ -155,6 +156,7 @@ public class PlayerController : MonoBehaviour
     void RestartGame()
     {
         gameOverUI.SetActive(false);
+        gameOverText.color = Color.white;
         controlsUI.SetActive(true);
         ResetPlayerState();
         GameManager.EnterWaitingMode();
