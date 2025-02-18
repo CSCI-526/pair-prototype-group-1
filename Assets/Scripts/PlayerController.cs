@@ -2,18 +2,21 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 using System;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     public float forwardSpeed;
     public float laneChangeSpeed;
     public float jumpForce;
+    
     public Rigidbody rb;
     private bool isGrounded = true; // Prevent double jumps.
     private int currentLane = Constants.Lanes.CENTER;
 
     // Variables for GameOver part
     public GameObject gameOverUI;
+    // public float gravity=-9.8f;
     public TMP_Text gameOverText; // Reference to Game Over message text
     public GameObject controlsUI;
     void Start()
@@ -25,6 +28,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // rb.AddForce(Vector3.down*gravity,ForceMode.Acceleration);
         // Handle keyboard input.
         ProcessInput();
 
@@ -32,6 +36,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+
 
         rb.linearVelocity =
             Vector3.forward * forwardSpeed * (GameManager.gameState == GameManager.GameState.ReverseMode ? -1 : 1) +
@@ -72,6 +77,7 @@ public class PlayerController : MonoBehaviour
 
     void ProcessInput()
     {
+        
         if (GameManager.gameState == GameManager.GameState.Waiting ||
             GameManager.gameState == GameManager.GameState.GameOver)
         {
@@ -104,6 +110,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            // rb.linearVelocity=new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
             isGrounded = false;
         }
     }

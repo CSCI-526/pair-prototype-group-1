@@ -93,9 +93,8 @@ public class TraceSpawnerManager : MonoBehaviour
         }
     }
 
-    void UpdateTracePlacedText()
-    {
-        tracesPlacedText.text = string.Format("Traces placed: {0}/10", traces.Count);
+    void UpdateTracePlacedText() {
+        tracesPlacedText.text = string.Format("Traces placed: {0}/8", traces.Count);
     }
 
     void ProcessInput()
